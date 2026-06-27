@@ -64,8 +64,15 @@ export default function DashboardScreen() {
           gamesData.map(async (id) => {
             try {
               const steamUrl = `/api/steam/appdetails?appids=${id}`;
-              const response = await fetch(steamUrl);
-              if (!response.ok) throw new Error('Network response was not ok');
+              const response = await fetch(steamUrl, { 
+                signal: AbortSignal.timeout(5000) // 5 second timeout
+              });
+              
+              if (!response.ok) {
+                console.warn(`Steam API returned ${response.status} for game ${id}`);
+                return null;
+              }
+              
               const data = await response.json();
               
               if (data && data[id]?.success) {
@@ -89,7 +96,7 @@ export default function DashboardScreen() {
                  };
                }
             } catch (err) {
-              console.error(`Failed to fetch game ${id}:`, err);
+              console.error(`Failed to fetch game ${id}:`, err.message);
             }
             return null;
           })
