@@ -9,8 +9,8 @@
 }
 
 body, body.theme-ps5 {
-  --bg-primary: #05070e;
-  --bg-gradient: radial-gradient(circle at 50% 30%, #0c122b 0%, #03050a 100%);
+  --bg-primary: #020308;
+  --bg-gradient: radial-gradient(circle at 50% 30%, #05070e 0%, #000000 100%);
   --accent-color: #0043ff;
   --text-main: #ffffff;
   --text-muted: #8c9ba5;
@@ -465,39 +465,6 @@ body {
   line-height: 1;
   text-align: center;
   padding-bottom: 1px;
-}
-
-/* Options menu tooltip */
-.options-helper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  opacity: 0;
-  transform: translateY(-5px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-}
-
-.options-icon {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 14px;
-}
-
-.options-icon span {
-  width: 100%;
-  height: 2px;
-  background: var(--text-muted);
-  border-radius: 1px;
-}
-
-.profile-card.focused .options-helper {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Bottom Actions Bar */

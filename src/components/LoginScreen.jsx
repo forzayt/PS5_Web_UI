@@ -91,7 +91,7 @@ export default function LoginScreen() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [focusCol, isLoggingIn, users.length]);
-
+    
   return (
     <div className={`login-screen-container ${isMounted ? 'active' : ''}`}>
       <div className="light-beam-overlay"></div>
@@ -118,14 +118,6 @@ export default function LoginScreen() {
               </div>
               <div className="profile-name">
                 <span>{user.username}</span>
-              </div>
-              <div className="options-helper">
-                <div className="options-icon">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <span>Options</span>
               </div>
             </div>
           ))}
