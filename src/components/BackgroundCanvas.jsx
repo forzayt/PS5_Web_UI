@@ -46,7 +46,9 @@ export default function BackgroundCanvas() {
         g.addColorStop(0, this.color);
         g.addColorStop(1, 'transparent');
         ctx.fillStyle = g;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
@@ -83,17 +85,20 @@ export default function BackgroundCanvas() {
       }
 
       draw() {
+        // Main star body
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.globalAlpha = this.opacity;
         ctx.fill();
         
+        // Draw a faint outer glow for larger/brighter stars instead of using expensive shadowBlur
         if (this.size > 1.2) {
-          ctx.shadowBlur = 4;
-          ctx.shadowColor = '#ffffff';
-        } else {
-          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = this.opacity * 0.15;
+          ctx.fill();
         }
       }
     }
