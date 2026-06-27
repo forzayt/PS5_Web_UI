@@ -53,7 +53,7 @@ export default function BootScreen() {
     <div className={`boot-container-new ${isExiting ? 'fade-out' : ''}`}>
       <div className={`boot-content-wrapper ${isReady ? 'visible' : ''}`}>
         <div className="boot-top-text">
-          Press the Enter button on your keyboard.
+          Press the Enter button on your controller.
         </div>
 
         <div 

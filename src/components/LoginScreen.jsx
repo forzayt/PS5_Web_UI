@@ -7,6 +7,7 @@ export default function LoginScreen() {
   const { setActiveScreen } = useFocus();
   const [isMounted, setIsMounted] = useState(false);
   const [focusCol, setFocusCol] = useState(0); // Default focused on first user
+  const [isPowerFocused, setIsPowerFocused] = useState(false);
   const [timeStr, setTimeStr] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -39,13 +40,25 @@ export default function LoginScreen() {
   }, []);
 
   const handleFocus = (col) => {
-    if (col !== focusCol) {
+    if (col !== focusCol || isPowerFocused) {
       setFocusCol(col);
+      setIsPowerFocused(false);
+      playTick();
+    }
+  };
+
+  const handlePowerFocus = () => {
+    if (!isPowerFocused) {
+      setIsPowerFocused(true);
       playTick();
     }
   };
 
   const handleSelect = () => {
+    if (isPowerFocused) {
+      handleShutdown();
+      return;
+    }
     // Profile selected
     playSelect();
     const user = users[focusCol];
@@ -59,6 +72,11 @@ export default function LoginScreen() {
       setIsLoggingIn(false);
       alert(`Logged in as ${name}! (In a full build, this would load the PS5 Dashboard)`);
     }, 2500);
+  };
+
+  const handleShutdown = () => {
+    playBack();
+    setActiveScreen('BOOT');
   };
 
   // Keyboard navigation
@@ -78,13 +96,25 @@ export default function LoginScreen() {
       }
 
       if (e.key === 'ArrowLeft') {
+        if (isPowerFocused) return;
         const nextCol = Math.max(0, focusCol - 1);
         handleFocus(nextCol);
       } else if (e.key === 'ArrowRight') {
+        if (isPowerFocused) return;
         const nextCol = Math.min(users.length - 1, focusCol + 1);
         handleFocus(nextCol);
+      } else if (e.key === 'ArrowDown') {
+        if (!isPowerFocused) {
+          handlePowerFocus();
+        }
+      } else if (e.key === 'ArrowUp') {
+        if (isPowerFocused) {
+          handleFocus(focusCol);
+        }
       } else if (e.key === 'Enter') {
         handleSelect();
+      } else if (e.key === 'Backspace' || e.key === 'Escape') {
+        handleShutdown();
       }
     };
 
@@ -107,7 +137,7 @@ export default function LoginScreen() {
           {users.map((user, index) => (
             <div 
               key={index}
-              className={`profile-card profile-card-${index + 1} ${focusCol === index ? 'focused' : ''}`}
+              className={`profile-card profile-card-${index + 1} ${(!isPowerFocused && focusCol === index) ? 'focused' : ''}`}
               onMouseEnter={() => handleFocus(index)}
               onClick={handleSelect}
             >
@@ -127,7 +157,19 @@ export default function LoginScreen() {
       {/* Bottom Actions Footer */}
       <div className="login-footer">
         <div className="footer-left">
-          {/* Power button removed */}
+          <div 
+            className={`footer-helper power-button ${isPowerFocused ? 'focused' : ''}`} 
+            onMouseEnter={handlePowerFocus}
+            onClick={handleSelect}
+          >
+            <div className="power-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                <line x1="12" y1="2" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <span>Shutdown</span>
+          </div>
         </div>
         <div className="footer-right">
           <div className="footer-helper">
