@@ -42,7 +42,57 @@ export default function DashboardScreen() {
   const [timeStr, setTimeStr] = useState('');
   const tileRowRef = useRef(null);
 
-  const items       = activeTab === 'games' ? gamesData.games : mediaData.media;
+  // Steam Game Fetching State
+  const [fetchedGames, setFetchedGames] = useState([]);
+  const [isLoadingGames, setIsLoadingGames] = useState(false);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      if (!gamesData || gamesData.length === 0) return;
+      setIsLoadingGames(true);
+      try {
+        const games = await Promise.all(
+          gamesData.map(async (id) => {
+            try {
+              const steamUrl = `/api/steam/appdetails?appids=${id}`;
+              const response = await fetch(steamUrl);
+              if (!response.ok) throw new Error('Network response was not ok');
+              const data = await response.json();
+              
+              if (data && data[id]?.success) {
+                 const game = data[id].data;
+                 return {
+                   id: id,
+                   title: game.name,
+                   cover: game.header_image,
+                   heroBackground: game.background || game.header_image,
+                   tagline: game.short_description.replace(/<[^>]*>?/gm, ''), // Remove HTML tags
+                   heroColor: '#0a0a0a', 
+                   accentColor: '#ffffff',
+                   badge: 'PS5'
+                 };
+               }
+            } catch (err) {
+              console.error(`Failed to fetch game ${id}:`, err);
+            }
+            return null;
+          })
+        );
+        const validGames = games.filter(Boolean);
+        if (validGames.length > 0) {
+          setFetchedGames(validGames);
+        }
+      } catch (error) {
+        console.error('Error fetching Steam games:', error);
+      } finally {
+        setIsLoadingGames(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
+  const items       = activeTab === 'games' ? (fetchedGames.length > 0 ? fetchedGames : []) : mediaData.media;
   const focusedItem = items[Math.min(focusedIndex, items.length - 1)];
 
   // ── Seed initial hero ────────────────────────────────────────────────────
@@ -60,13 +110,13 @@ export default function DashboardScreen() {
     if (!focusedItem) return;
     setHeroFading(true);
     const t = setTimeout(() => {
-      setHeroCover(focusedItem.cover || '');
+      setHeroCover(focusedItem.heroBackground || focusedItem.cover || '');
       setHeroBgColor(focusedItem.heroColor || '#020308');
       setHeroAccent(focusedItem.accentColor || '#ffffff');
       setHeroFading(false);
     }, 260);
     return () => clearTimeout(t);
-  }, [focusedIndex, activeTab]);
+  }, [focusedIndex, activeTab, focusedItem]);
 
   // ── Scroll focused tile into view ────────────────────────────────────────
   useEffect(() => {
@@ -181,33 +231,40 @@ export default function DashboardScreen() {
         {/* Tile Row */}
         <div className="dashboard-row-wrapper">
           <div className="dashboard-tile-row" ref={tileRowRef} role="listbox">
-            {items.map((item, i) => (
-              <div
-                key={item.id}
-                role="option"
-                aria-selected={i === focusedIndex}
-                className={`dashboard-tile${i === focusedIndex ? ' focused' : ''}`}
-                onClick={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
-                onMouseEnter={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
-              >
-                {item.cover ? (
-                  <img
-                    src={item.cover}
-                    alt={item.title}
-                    className="tile-cover-img"
-                    onError={e => { e.currentTarget.style.display = 'none'; }}
-                  />
-                ) : (
-                  <div
-                    className="tile-media-bg"
-                    style={{ background: `linear-gradient(135deg, ${item.heroColor} 0%, ${item.accentColor} 100%)` }}
-                  >
-                    <span className="tile-media-icon">{item.icon}</span>
-                  </div>
-                )}
-                {item.badge && <span className="tile-badge">{item.badge}</span>}
+            {isLoadingGames && activeTab === 'games' ? (
+              <div className="loading-games">
+                <div className="spinner"></div>
+                <span>Fetching Steam Games...</span>
               </div>
-            ))}
+            ) : (
+              items.map((item, i) => (
+                <div
+                  key={item.id}
+                  role="option"
+                  aria-selected={i === focusedIndex}
+                  className={`dashboard-tile${i === focusedIndex ? ' focused' : ''}`}
+                  onClick={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
+                  onMouseEnter={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
+                >
+                  {item.cover ? (
+                    <img
+                      src={item.cover}
+                      alt={item.title}
+                      className="tile-cover-img"
+                      onError={e => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  ) : (
+                    <div
+                      className="tile-media-bg"
+                      style={{ background: `linear-gradient(135deg, ${item.heroColor} 0%, ${item.accentColor} 100%)` }}
+                    >
+                      <span className="tile-media-icon">{item.icon}</span>
+                    </div>
+                  )}
+                  {item.badge && <span className="tile-badge">{item.badge}</span>}
+                </div>
+              ))
+            )}
           </div>
           
           {focusedItem && (
