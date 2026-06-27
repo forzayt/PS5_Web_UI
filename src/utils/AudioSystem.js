@@ -1,12 +1,15 @@
 // Web Audio API Synthesizer for PS5 Console UI
 // Synthesizes startup chimes, navigation clicks, selections, and looping ambient themes.
 
+import bootClickSound from '../assets/sfx/boot_logo_click_sound.ogg';
+
 let audioCtx = null;
 let ambientOscs = [];
 let ambientGains = [];
 let ambientFilter = null;
 let currentThemeName = 'ps5';
 let ambientInterval = null;
+let bootClickBuffer = null;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -16,6 +19,45 @@ function getAudioContext() {
     audioCtx.resume();
   }
   return audioCtx;
+}
+
+// Pre-load the OGG file
+async function loadBootClick() {
+  if (bootClickBuffer) return bootClickBuffer;
+  try {
+    const ctx = getAudioContext();
+    const response = await fetch(bootClickSound);
+    const arrayBuffer = await response.arrayBuffer();
+    bootClickBuffer = await ctx.decodeAudioData(arrayBuffer);
+    return bootClickBuffer;
+  } catch (e) {
+    console.error("Failed to load boot click sound", e);
+    return null;
+  }
+}
+
+// Initialize loading
+loadBootClick();
+
+// Play the OGG boot click sound
+export async function playBootClick() {
+  try {
+    const ctx = getAudioContext();
+    const buffer = await loadBootClick();
+    if (!buffer) return;
+
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    
+    source.buffer = buffer;
+    gain.gain.value = 0.5; // Adjust volume as needed
+
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(0);
+  } catch (e) {
+    console.error("Failed to play boot click sound", e);
+  }
 }
 
 // Synthesize PlayStation-like startup chime

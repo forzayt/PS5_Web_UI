@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { playBootSound, startMusic } from '../utils/AudioSystem';
+import { playBootSound, startMusic, playBootClick } from '../utils/AudioSystem';
 import { useFocus } from '../context/FocusContext';
 import psLogo from '../assets/logos/main_black.png';
 
@@ -18,6 +18,9 @@ export default function BootScreen() {
   const handleStart = () => {
     if (isExiting) return;
     setIsPressed(true);
+    
+    // Play the OGG boot click sound
+    playBootClick();
     
     // Synthesize the PlayStation 5 boot audio
     playBootSound();
