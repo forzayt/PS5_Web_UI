@@ -1018,6 +1018,35 @@ body {
   position: relative;
   z-index: 10;
   padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.details-back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.details-back-btn.focused {
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.details-back-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .details-game-mini {
@@ -1093,14 +1122,18 @@ body {
   transition: all 0.2s;
 }
 
-.details-btn-buy.focused {
+.details-btn-buy.focused,
+.details-btn-wishlist.focused,
+.details-btn-more.focused {
+  background: #fff;
+  color: #000;
   transform: scale(1.05);
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
 }
 
 .details-btn-wishlist {
-  background: #fff;
-  color: #000;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
   border: none;
   padding: 16px 40px;
   border-radius: 40px;
@@ -1110,6 +1143,8 @@ body {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
 }
 
 .heart-icon {
@@ -1128,6 +1163,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
 }
 
 .details-rating-row {
@@ -1216,11 +1253,14 @@ body {
   border-radius: 8px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 3px solid transparent;
 }
 
-.details-media-tile:hover {
+.details-media-tile.focused {
   transform: scale(1.05);
+  border-color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .details-media-tile img {
