@@ -6,12 +6,10 @@ import userData from '../data/users.json';
 export default function LoginScreen() {
   const { setActiveScreen } = useFocus();
   const [isMounted, setIsMounted] = useState(false);
-  const [focusRow, setFocusRow] = useState(0); // Row 0 = profiles, Row 1 = bottom options
   const [focusCol, setFocusCol] = useState(0); // Default focused on first user
   const [timeStr, setTimeStr] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isShuttingDown, setIsShuttingDown] = useState(false);
 
   const users = userData.users;
 
@@ -40,66 +38,51 @@ export default function LoginScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleFocus = (row, col) => {
-    if (row !== focusRow || col !== focusCol) {
-      setFocusRow(row);
+  const handleFocus = (col) => {
+    if (col !== focusCol) {
       setFocusCol(col);
       playTick();
     }
   };
 
   const handleSelect = () => {
-    if (focusRow === 0) {
-      // Profile selected
-      playSelect();
-      const user = users[focusCol];
-      const name = user.username;
+    // Profile selected
+    playSelect();
+    const user = users[focusCol];
+    const name = user.username;
 
-      setSelectedUser(name);
-      setIsLoggingIn(true);
-      
-      // Simulate dashboard loading or login completion
-      setTimeout(() => {
-        setIsLoggingIn(false);
-        alert(`Logged in as ${name}! (In a full build, this would load the PS5 Dashboard)`);
-      }, 2500);
-
-    } else if (focusRow === 1 && focusCol === 0) {
-      // Power button selected
-      playBack();
-      setIsShuttingDown(true);
-      stopMusic();
-      
-      // Return to boot screen after shut down animation
-      setTimeout(() => {
-        setActiveScreen('BOOT');
-      }, 1500);
-    }
+    setSelectedUser(name);
+    setIsLoggingIn(true);
+    
+    // Simulate dashboard loading or login completion
+    setTimeout(() => {
+      setIsLoggingIn(false);
+      alert(`Logged in as ${name}! (In a full build, this would load the PS5 Dashboard)`);
+    }, 2500);
   };
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (isLoggingIn || isShuttingDown) return;
+      if (isLoggingIn) return;
+
+      if (e.key === 'F11') {
+        e.preventDefault();
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
 
       if (e.key === 'ArrowLeft') {
-        if (focusRow === 0) {
-          const nextCol = Math.max(0, focusCol - 1);
-          handleFocus(0, nextCol);
-        }
+        const nextCol = Math.max(0, focusCol - 1);
+        handleFocus(nextCol);
       } else if (e.key === 'ArrowRight') {
-        if (focusRow === 0) {
-          const nextCol = Math.min(users.length - 1, focusCol + 1);
-          handleFocus(0, nextCol);
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (focusRow === 0) {
-          handleFocus(1, 0); // Focus Power button
-        }
-      } else if (e.key === 'ArrowUp') {
-        if (focusRow === 1) {
-          handleFocus(0, 0); // Focus first user profile
-        }
+        const nextCol = Math.min(users.length - 1, focusCol + 1);
+        handleFocus(nextCol);
       } else if (e.key === 'Enter') {
         handleSelect();
       }
@@ -107,7 +90,7 @@ export default function LoginScreen() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [focusRow, focusCol, isLoggingIn, isShuttingDown, users.length]);
+  }, [focusCol, isLoggingIn, users.length]);
 
   // SVG Gamepad Icon
   const gamepadIcon = (
@@ -120,7 +103,7 @@ export default function LoginScreen() {
   );
 
   return (
-    <div className={`login-screen-container ${isMounted ? 'active' : ''} ${isShuttingDown ? 'fade-out' : ''}`}>
+    <div className={`login-screen-container ${isMounted ? 'active' : ''}`}>
       <div className="light-beam-overlay"></div>
       <div className="login-clock">{timeStr}</div>
 
@@ -134,8 +117,8 @@ export default function LoginScreen() {
           {users.map((user, index) => (
             <div 
               key={index}
-              className={`profile-card profile-card-${index + 1} ${focusRow === 0 && focusCol === index ? 'focused' : ''}`}
-              onMouseEnter={() => handleFocus(0, index)}
+              className={`profile-card profile-card-${index + 1} ${focusCol === index ? 'focused' : ''}`}
+              onMouseEnter={() => handleFocus(index)}
               onClick={handleSelect}
             >
               <div className="controller-indicator">
@@ -166,18 +149,13 @@ export default function LoginScreen() {
       {/* Bottom Actions Footer */}
       <div className="login-footer">
         <div className="footer-left">
-          <button 
-            className={`power-btn ${focusRow === 1 && focusCol === 0 ? 'focused' : ''}`}
-            onMouseEnter={() => handleFocus(1, 0)}
-            onClick={handleSelect}
-            aria-label="Power Options"
-          >
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16.56 2.56c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41C17.62 6.4 19 9.04 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.96 1.38-5.6 3.85-8.03.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0C4.42 5.58 3 8.64 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-3.36-1.42-6.42-4.44-9.44zM12 2c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1s1-.45 1-1V3c0-.55-.45-1-1-1z" />
-            </svg>
-          </button>
+          {/* Power button removed */}
         </div>
         <div className="footer-right">
+          <div className="footer-helper">
+            <span className="key-icon">F11</span>
+            <span>Fullscreen</span>
+          </div>
           <div className="footer-helper">
             <span className="key-icon">Arrows</span>
             <span>Navigate</span>
