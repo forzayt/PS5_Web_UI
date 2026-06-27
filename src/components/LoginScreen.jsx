@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { playTick, playSelect, playBack, stopMusic } from '../utils/AudioSystem';
 import { useFocus } from '../context/FocusContext';
 import userData from '../data/users.json';
+import psLogo from '../assets/logos/main_white.png';
 
 export default function LoginScreen() {
   const { setActiveScreen, setActiveUser } = useFocus();
@@ -162,31 +163,23 @@ export default function LoginScreen() {
           left: 0,
           width: '100vw',
           height: '100vh',
-          background: 'rgba(0, 0, 0, 0.85)',
+          background: '#000',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: '20px',
           zIndex: 1000,
-          color: '#fff',
-          fontFamily: 'var(--font-primary)',
-          backdropFilter: 'blur(10px)',
           animation: 'fadeIn 0.5s ease forwards'
         }}>
-          <div className="spinner" style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            border: '3px solid rgba(255, 255, 255, 0.1)',
-            borderTopColor: '#0043ff',
-            animation: 'spin 1s linear infinite'
-          }}></div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 300, letterSpacing: '0.5px' }}>
-            Welcome back, {selectedUser}...
-          </div>
+          <img src={psLogo} alt="PlayStation" style={{
+            width: '100px',
+            animation: 'blink 1s ease-in-out infinite'
+          }} />
           <style>{`
-            @keyframes spin { to { transform: rotate(360deg); } }
+            @keyframes blink { 
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.3; } 
+            }
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
           `}</style>
         </div>
