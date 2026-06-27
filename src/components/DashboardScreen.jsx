@@ -199,11 +199,6 @@ export default function DashboardScreen() {
       } else if (e.key === 'ArrowRight') {
         const next = Math.min(items.length - 1, focusedIndex + 1);
         if (next !== focusedIndex) { playTick(); setFocusedIndex(next); }
-      } else if (e.key === 'Tab') {
-        e.preventDefault();
-        playTick();
-        setActiveTab(t => t === 'games' ? 'media' : 'games');
-        setFocusedIndex(0);
       } else if (e.key === 'Enter') {
         playSelect();
       } else if (e.key === 'Escape' || e.key === 'Backspace') {
@@ -246,26 +241,9 @@ export default function DashboardScreen() {
 
       {/* ── Top navigation bar ─────────────────────────────────────────────── */}
       <header className="dashboard-topbar">
-        <nav className="dashboard-tabs" role="tablist">
-          <button
-            id="tab-games"
-            role="tab"
-            aria-selected={activeTab === 'games'}
-            className={`dash-tab${activeTab === 'games' ? ' active' : ''}`}
-            onClick={() => { setActiveTab('games'); setFocusedIndex(0); }}
-          >
-            Games
-          </button>
-          <button
-            id="tab-media"
-            role="tab"
-            aria-selected={activeTab === 'media'}
-            className={`dash-tab${activeTab === 'media' ? ' active' : ''}`}
-            onClick={() => { setActiveTab('media'); setFocusedIndex(0); }}
-          >
-            Media
-          </button>
-        </nav>
+        <div className="dashboard-topbar-left">
+          {/* Tabs removed as per user request */}
+        </div>
 
         <div className="dashboard-topbar-right">
           <button className="topbar-icon-btn" aria-label="Search">
@@ -357,14 +335,6 @@ export default function DashboardScreen() {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Keyboard hint bar */}
-      <div className="dashboard-hint-bar" aria-hidden="true">
-        <span><kbd>← →</kbd> Navigate</span>
-        <span><kbd>Tab</kbd> Switch Tab</span>
-        <span><kbd>Enter</kbd> Play</span>
-        <span><kbd>Esc</kbd> Back</span>
       </div>
     </div>
   );

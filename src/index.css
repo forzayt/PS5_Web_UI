@@ -758,7 +758,7 @@ body {
   gap: 12px;
   overflow-x: auto;
   scrollbar-width: none;
-  padding: 10px 0;
+  padding: 10px 60px; /* Added 60px padding to start and end */
 }
 
 .dashboard-tile-row::-webkit-scrollbar {
