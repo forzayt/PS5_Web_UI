@@ -1,90 +1,164 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { playBootSound } from '../utils/AudioSystem';
 import { useFocus } from '../context/FocusContext';
+import psLogo from '../assets/logos/main_black.png';
 
 export default function BootScreen() {
   const { setActiveScreen, setFocusId } = useFocus();
-  const [bootPhase, setBootPhase] = useState('power-off'); // power-off, logo, press-button
+  const canvasRef = useRef(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Stage 1: Power-off state, transitions to Logo after 1s
-    const timer1 = setTimeout(() => {
-      setBootPhase('logo');
-    }, 1000);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    // Stage 2: Logo fades out, showing press-button prompt after 3.5s
-    const timer2 = setTimeout(() => {
-      setBootPhase('press-button');
-    }, 3500);
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const particles = [];
+    const particleCount = 150;
+    const colors = ['#ffffff', '#0043ff', '#00d2ff', '#ffffff', '#8c9ba5'];
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.2;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.wobble = Math.random() * Math.PI * 2;
+        this.wobbleSpeed = Math.random() * 0.02;
+      }
+
+      update() {
+        this.x += this.speedX + Math.sin(this.wobble) * 0.2;
+        this.y += this.speedY + Math.cos(this.wobble) * 0.2;
+        this.wobble += this.wobbleSpeed;
+
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.fill();
+        
+        // Add glow to some particles
+        if (this.size > 1.5) {
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+      }
+    }
+
+    const init = () => {
+      particles.length = 0;
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw background glow
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, canvas.width * 0.6
+      );
+      gradient.addColorStop(0, 'rgba(12, 18, 43, 0.4)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = 1;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    const timer = setTimeout(() => setIsReady(true), 2000);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(timer);
     };
   }, []);
 
+  const [isPressed, setIsPressed] = useState(false);
+
   const handleStart = () => {
+    setIsPressed(true);
     playBootSound();
-    // Short delay so the chime starts before screen transition
+    
+    // Reset animation after a short delay
     setTimeout(() => {
-      setActiveScreen('USER_SELECT');
-      setFocusId('user-0');
-    }, 500);
+      setIsPressed(false);
+      // For now, we just play the sound and stay on this screen
+      // as other components have been removed.
+      console.log("Console Starting...");
+    }, 300);
   };
 
-  return (
-    <div className={`boot-container ${bootPhase}`} onClick={bootPhase === 'press-button' ? handleStart : undefined}>
-      {bootPhase === 'logo' && (
-        <div className="ps-logo-container">
-          <svg className="ps-logo-svg" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-            {/* PlayStation P shape */}
-            <path
-              className="logo-p"
-              d="M38,5 C48,5 56,12 56,22 C56,32 48,39 38,39 L31,39 L31,65 L21,65 L21,5 L38,5 Z M38,15 L31,15 L31,29 L38,29 C42,29 46,26 46,22 C46,18 42,15 38,15 Z"
-              fill="#FFFFFF"
-            />
-            {/* PlayStation S shape (skewed ground perspective) */}
-            <path
-              className="logo-s"
-              d="M74,58 C85,58 92,62 92,67 C92,72 82,75 66,75 C42,75 14,71 14,64 L24,59 C24,62 38,65 58,65 C72,65 82,64 82,62 C82,60 76,59 66,59 C44,59 28,56 28,51 C28,46 44,43 66,43 C84,43 94,46 94,49 L84,54 C84,52 76,51 64,51 C50,51 38,52 38,54 C38,56 46,57 58,57 L74,58 Z"
-              fill="#FFFFFF"
-              opacity="0.7"
-            />
-          </svg>
-          <div className="ps-brand-text">PLAYSTATION®5</div>
-        </div>
-      )}
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        handleStart();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
-      {bootPhase === 'press-button' && (
-        <div className="boot-start-content">
-          <div className="controller-icon-wrapper">
-            <svg className="controller-svg" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20,15 C10,15 5,25 5,45 C5,65 15,75 25,75 C32,75 38,70 42,65 L58,65 C62,70 68,75 75,75 C85,75 95,65 95,45 C95,25 90,15 80,15 L20,15 Z"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="3"
-              />
-              <circle cx="20" cy="35" r="3" fill="#FFFFFF" />
-              <circle cx="15" cy="40" r="3" fill="#FFFFFF" />
-              <circle cx="25" cy="40" r="3" fill="#FFFFFF" />
-              <circle cx="20" cy="45" r="3" fill="#FFFFFF" />
-              
-              <circle cx="80" cy="35" r="3" fill="#FFFFFF" />
-              <circle cx="75" cy="40" r="3" fill="#FFFFFF" />
-              <circle cx="85" cy="40" r="3" fill="#FFFFFF" />
-              <circle cx="80" cy="45" r="3" fill="#FFFFFF" />
-              
-              <path d="M42,50 C45,47 55,47 58,50" stroke="#FFFFFF" strokeWidth="2" fill="none" />
-            </svg>
-          </div>
-          <h2 className="boot-prompt-title">Welcome Back to PlayStation</h2>
-          <p className="boot-prompt-subtitle">Press <span className="keyboard-key">Enter</span> to start</p>
-          <button className="boot-start-btn focused" onClick={handleStart}>
-            Start Console
-          </button>
+  return (
+    <div className="boot-container-new">
+      <canvas ref={canvasRef} className="boot-canvas" />
+      
+      <div className={`boot-content-wrapper ${isReady ? 'visible' : ''}`}>
+        <div className="boot-top-text">
+          Press the PS button on your controller.
         </div>
-      )}
+
+        <div 
+          className={`ps-button-wrapper ${isPressed ? 'pressed' : ''}`} 
+          onClick={handleStart}
+        >
+          <div className="ps-button-outer-ring">
+            <div className="ps-button-inner-ring">
+              <div className="ps-button-core">
+                <img src={psLogo} alt="PlayStation Logo" className="ps-icon-img" />
+              </div>
+            </div>
+          </div>
+          <div className="ps-button-glow"></div>
+        </div>
+      </div>
     </div>
   );
 }
