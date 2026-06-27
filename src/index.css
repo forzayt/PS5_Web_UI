@@ -689,9 +689,11 @@ body {
   transition: all 0.2s;
 }
 
-.topbar-icon-btn:hover {
+.topbar-icon-btn:hover,
+.topbar-icon-btn.focused {
   color: #ffffff;
   transform: scale(1.15);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
 }
 
 .topbar-user {
@@ -704,9 +706,11 @@ body {
   transition: all 0.2s;
 }
 
-.topbar-user:hover {
+.topbar-user:hover,
+.topbar-user.focused {
   border-color: #ffffff;
   transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 }
 
 .topbar-avatar {
@@ -881,7 +885,8 @@ body {
   transition: all 0.2s;
 }
 
-.btn-play:hover {
+.btn-play:hover,
+.btn-play.focused {
   transform: scale(1.05);
   background: #f0f0f0;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
@@ -902,9 +907,11 @@ body {
   backdrop-filter: blur(10px);
 }
 
-.btn-more:hover {
+.btn-more:hover,
+.btn-more.focused {
   background: rgba(255, 255, 255, 0.25);
   transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .btn-more svg {

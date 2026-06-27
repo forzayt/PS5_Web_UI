@@ -32,6 +32,9 @@ export default function DashboardScreen() {
   const { activeUser, setActiveScreen } = useFocus();
   const [activeTab, setActiveTab] = useState('games');
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const [focusedSection, setFocusedSection] = useState('TILES'); // 'TOP_BAR', 'TILES', 'HERO'
+  const [topBarIndex, setTopBarIndex] = useState(0); // 0: Search, 1: Settings, 2: Profile
+  const [heroIndex, setHeroIndex] = useState(0); // 0: Play, 1: More
 
   // Hero crossfade state
   const [heroBgColor, setHeroBgColor]   = useState('#020308');
@@ -193,15 +196,51 @@ export default function DashboardScreen() {
   // ── Keyboard navigation ──────────────────────────────────────────────────
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'ArrowLeft') {
-        const next = Math.max(0, focusedIndex - 1);
-        if (next !== focusedIndex) { playTick(); setFocusedIndex(next); }
-      } else if (e.key === 'ArrowRight') {
-        const next = Math.min(items.length - 1, focusedIndex + 1);
-        if (next !== focusedIndex) { playTick(); setFocusedIndex(next); }
-      } else if (e.key === 'Enter') {
-        playSelect();
-      } else if (e.key === 'Escape' || e.key === 'Backspace') {
+      if (focusedSection === 'TOP_BAR') {
+        if (e.key === 'ArrowLeft') {
+          const next = Math.max(0, topBarIndex - 1);
+          if (next !== topBarIndex) { playTick(); setTopBarIndex(next); }
+        } else if (e.key === 'ArrowRight') {
+          const next = Math.min(2, topBarIndex + 1);
+          if (next !== topBarIndex) { playTick(); setTopBarIndex(next); }
+        } else if (e.key === 'ArrowDown') {
+          playTick();
+          setFocusedSection('TILES');
+        } else if (e.key === 'Enter') {
+          playSelect();
+        }
+      } else if (focusedSection === 'TILES') {
+        if (e.key === 'ArrowLeft') {
+          const next = Math.max(0, focusedIndex - 1);
+          if (next !== focusedIndex) { playTick(); setFocusedIndex(next); }
+        } else if (e.key === 'ArrowRight') {
+          const next = Math.min(items.length - 1, focusedIndex + 1);
+          if (next !== focusedIndex) { playTick(); setFocusedIndex(next); }
+        } else if (e.key === 'ArrowUp') {
+          playTick();
+          setFocusedSection('TOP_BAR');
+        } else if (e.key === 'ArrowDown') {
+          playTick();
+          setFocusedSection('HERO');
+        } else if (e.key === 'Enter') {
+          playSelect();
+        }
+      } else if (focusedSection === 'HERO') {
+        if (e.key === 'ArrowLeft') {
+          const next = Math.max(0, heroIndex - 1);
+          if (next !== heroIndex) { playTick(); setHeroIndex(next); }
+        } else if (e.key === 'ArrowRight') {
+          const next = Math.min(1, heroIndex + 1);
+          if (next !== heroIndex) { playTick(); setHeroIndex(next); }
+        } else if (e.key === 'ArrowUp') {
+          playTick();
+          setFocusedSection('TILES');
+        } else if (e.key === 'Enter') {
+          playSelect();
+        }
+      }
+
+      if (e.key === 'Escape' || e.key === 'Backspace') {
         playBack();
         stopMusic();
         setActiveScreen('LOGIN');
@@ -209,7 +248,7 @@ export default function DashboardScreen() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [focusedIndex, items.length, activeTab]);
+  }, [focusedIndex, items.length, activeTab, focusedSection, topBarIndex, heroIndex]);
 
   return (
     <div className="dashboard-container">
@@ -246,14 +285,14 @@ export default function DashboardScreen() {
         </div>
 
         <div className="dashboard-topbar-right">
-          <button className="topbar-icon-btn" aria-label="Search">
+          <button className={`topbar-icon-btn${focusedSection === 'TOP_BAR' && topBarIndex === 0 ? ' focused' : ''}`} aria-label="Search">
             <SearchIcon />
           </button>
-          <button className="topbar-icon-btn" aria-label="Settings">
+          <button className={`topbar-icon-btn${focusedSection === 'TOP_BAR' && topBarIndex === 1 ? ' focused' : ''}`} aria-label="Settings">
             <SettingsIcon />
           </button>
           {/* User avatar */}
-          <div className="topbar-user" title={activeUser?.username || ''}>
+          <div className={`topbar-user${focusedSection === 'TOP_BAR' && topBarIndex === 2 ? ' focused' : ''}`} title={activeUser?.username || ''}>
             {activeUser?.dp
               ? <img src={activeUser.dp} alt={activeUser.username} className="topbar-avatar" />
               : <div className="topbar-avatar-placeholder">{activeUser?.username?.[0] || '?'}</div>
@@ -279,8 +318,8 @@ export default function DashboardScreen() {
                 <div
                   key={item.id}
                   role="option"
-                  aria-selected={i === focusedIndex}
-                  className={`dashboard-tile${i === focusedIndex ? ' focused' : ''}`}
+                  aria-selected={i === focusedIndex && focusedSection === 'TILES'}
+                  className={`dashboard-tile${i === focusedIndex && focusedSection === 'TILES' ? ' focused' : ''}`}
                   onClick={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
                   onMouseEnter={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
                 >
@@ -327,10 +366,10 @@ export default function DashboardScreen() {
           <p className="hero-tagline">{focusedItem?.tagline}</p>
           
           <div className="hero-actions">
-            <button className="btn-play" onClick={playSelect}>
+            <button className={`btn-play${focusedSection === 'HERO' && heroIndex === 0 ? ' focused' : ''}`} onClick={playSelect}>
               Play
             </button>
-            <button className="btn-more">
+            <button className={`btn-more${focusedSection === 'HERO' && heroIndex === 1 ? ' focused' : ''}`}>
               <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
             </button>
           </div>
