@@ -92,16 +92,6 @@ export default function LoginScreen() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [focusCol, isLoggingIn, users.length]);
 
-  // SVG Gamepad Icon
-  const gamepadIcon = (
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path 
-        d="M22.5 8h-13C6.46 8 4 10.46 4 13.5v5c0 2.22 1.3 4.13 3.17 4.96C8 26.54 11 27 11 27l2.5-3.5h5l2.5 3.5s3-.46 3.83-3.54C26.7 22.63 28 20.72 28 18.5v-5C28 10.46 25.54 8 22.5 8zM9.5 17h-1.5v-1.5h-1v-1h1.5v-1.5h1v1.5h1.5v1h-1.5v1.5zm10.5-2.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" 
-        fill="currentColor" 
-      />
-    </svg>
-  );
-
   return (
     <div className={`login-screen-container ${isMounted ? 'active' : ''}`}>
       <div className="light-beam-overlay"></div>
@@ -121,10 +111,6 @@ export default function LoginScreen() {
               onMouseEnter={() => handleFocus(index)}
               onClick={handleSelect}
             >
-              <div className="controller-indicator">
-                {gamepadIcon}
-                <span>1</span>
-              </div>
               <div className="avatar-wrapper">
                 <div className="avatar-image-container">
                   <img src={user.dp} alt={user.username} className="avatar-img" />
