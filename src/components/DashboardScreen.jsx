@@ -6,8 +6,39 @@ import mediaData from '../data/media.json';
 import quickActionsData from '../data/quickActions.json';
 
 // ──────────────────────────────────────────────────────────────────────────────
-// Quick-action SVG icons
+// SVG Icon Components
 // ──────────────────────────────────────────────────────────────────────────────
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  );
+}
+
+function SettingsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </svg>
+  );
+}
+
+// PlayStation Plus badge
+function PsPlus() {
+  return (
+    <span className="topbar-ps-plus" title="PlayStation Plus">
+      <svg viewBox="0 0 20 20" fill="none">
+        <rect width="20" height="20" rx="4" fill="#f1bf00"/>
+        <text x="10" y="15" textAnchor="middle" fill="#000" fontSize="12" fontWeight="900" fontFamily="Arial">+</text>
+      </svg>
+    </span>
+  );
+}
+
+// Quick-action SVG icons
 function QuickActionIcon({ type }) {
   if (type === 'bag') return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -42,34 +73,29 @@ function QuickActionIcon({ type }) {
 // ──────────────────────────────────────────────────────────────────────────────
 export default function DashboardScreen() {
   const { activeUser, setActiveScreen } = useFocus();
-  const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('games');
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   // Hero crossfade state
-  const [heroCover, setHeroCover] = useState('');
-  const [heroBgColor, setHeroBgColor] = useState('#020308');
-  const [heroAccent, setHeroAccent] = useState('#ffffff');
-  const [heroFading, setHeroFading] = useState(false);
+  const [heroCover, setHeroCover]       = useState('');
+  const [heroBgColor, setHeroBgColor]   = useState('#020308');
+  const [heroAccent, setHeroAccent]     = useState('#ffffff');
+  const [heroFading, setHeroFading]     = useState(false);
 
   const [timeStr, setTimeStr] = useState('');
   const tileRowRef = useRef(null);
 
-  const items = activeTab === 'games' ? gamesData.games : mediaData.media;
+  const items       = activeTab === 'games' ? gamesData.games : mediaData.media;
   const focusedItem = items[Math.min(focusedIndex, items.length - 1)];
 
-  // ── Entry animation ──────────────────────────────────────────────────────
-  useEffect(() => {
-    requestAnimationFrame(() => requestAnimationFrame(() => setIsMounted(true)));
-  }, []);
-
-  // ── Seed initial hero immediately ────────────────────────────────────────
+  // ── Seed initial hero ────────────────────────────────────────────────────
   useEffect(() => {
     if (focusedItem) {
       setHeroCover(focusedItem.cover || '');
       setHeroBgColor(focusedItem.heroColor || '#020308');
       setHeroAccent(focusedItem.accentColor || '#ffffff');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Hero crossfade when selection changes ────────────────────────────────
@@ -81,7 +107,7 @@ export default function DashboardScreen() {
       setHeroBgColor(focusedItem.heroColor || '#020308');
       setHeroAccent(focusedItem.accentColor || '#ffffff');
       setHeroFading(false);
-    }, 280);
+    }, 260);
     return () => clearTimeout(t);
   }, [focusedIndex, activeTab]);
 
@@ -95,10 +121,11 @@ export default function DashboardScreen() {
   // ── Real-time clock ──────────────────────────────────────────────────────
   useEffect(() => {
     const fmt = () => {
-      const d = new Date();
-      let h = d.getHours(), m = d.getMinutes();
+      const d  = new Date();
+      let h    = d.getHours();
+      const m  = d.getMinutes();
       const ap = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
+      h        = h % 12 || 12;
       const mm = m < 10 ? `0${m}` : m;
       setTimeStr(`${h}:${mm} ${ap}`);
     };
@@ -136,32 +163,39 @@ export default function DashboardScreen() {
   return (
     <div className="dashboard-container">
 
-      {/* ── Ambient blurred hero background ─────────────────────────────── */}
+      {/* ── Ambient blurred background ─────────────────────────────────────── */}
       <div
         className="dashboard-hero-bg"
         style={{
-          backgroundImage: heroCover ? `url(${heroCover})` : 'none',
-          backgroundColor: heroBgColor,
+          backgroundImage : heroCover ? `url(${heroCover})` : 'none',
+          backgroundColor : heroBgColor,
         }}
       />
-      {/* Colour-tinted vignette overlay */}
+      {/* Colour-tinted radial glow from the right */}
       <div
         className="dashboard-hero-tint"
         style={{ '--accent': heroAccent }}
       />
+      {/* Dark left-side readability gradient */}
       <div className="dashboard-hero-overlay" />
 
-      {/* ── Top bar ─────────────────────────────────────────────────────── */}
+      {/* ── Top navigation bar ─────────────────────────────────────────────── */}
       <header className="dashboard-topbar">
-        <nav className="dashboard-tabs">
+        <nav className="dashboard-tabs" role="tablist">
           <button
-            className="dash-tab"
+            id="tab-games"
+            role="tab"
+            aria-selected={activeTab === 'games'}
+            className={`dash-tab${activeTab === 'games' ? ' active' : ''}`}
             onClick={() => { setActiveTab('games'); setFocusedIndex(0); }}
           >
             Games
           </button>
           <button
-            className="dash-tab"
+            id="tab-media"
+            role="tab"
+            aria-selected={activeTab === 'media'}
+            className={`dash-tab${activeTab === 'media' ? ' active' : ''}`}
             onClick={() => { setActiveTab('media'); setFocusedIndex(0); }}
           >
             Media
@@ -169,19 +203,11 @@ export default function DashboardScreen() {
         </nav>
 
         <div className="dashboard-topbar-right">
-          {/* Search */}
           <button className="topbar-icon-btn" aria-label="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
+            <SearchIcon />
           </button>
-          {/* Settings */}
           <button className="topbar-icon-btn" aria-label="Settings">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-            </svg>
+            <SettingsIcon />
           </button>
           {/* User avatar */}
           <div className="topbar-user" title={activeUser?.username || ''}>
@@ -190,18 +216,19 @@ export default function DashboardScreen() {
               : <div className="topbar-avatar-placeholder">{activeUser?.username?.[0] || '?'}</div>
             }
           </div>
-          <span className="topbar-clock">{timeStr}</span>
+          <span className="topbar-clock" aria-live="polite">{timeStr}</span>
         </div>
       </header>
 
-      {/* ── Game tile row ────────────────────────────────────────────────── */}
+      {/* ── Game / Media tile row ───────────────────────────────────────────── */}
       <div className="dashboard-row-wrapper">
-        <div className="dashboard-tile-row" ref={tileRowRef}>
+        <div className="dashboard-tile-row" ref={tileRowRef} role="listbox">
           {items.map((item, i) => (
             <div
               key={item.id}
-              className="dashboard-tile"
-              style={{ '--tile-bg': item.heroColor, '--tile-accent': item.accentColor }}
+              role="option"
+              aria-selected={i === focusedIndex}
+              className={`dashboard-tile${i === focusedIndex ? ' focused' : ''}`}
               onClick={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
               onMouseEnter={() => { if (i !== focusedIndex) { playTick(); setFocusedIndex(i); } }}
             >
@@ -210,76 +237,80 @@ export default function DashboardScreen() {
                   src={item.cover}
                   alt={item.title}
                   className="tile-cover-img"
-                  onError={e => { e.target.style.display = 'none'; }}
+                  onError={e => { e.currentTarget.style.display = 'none'; }}
                 />
               ) : (
                 <div
                   className="tile-media-bg"
                   style={{ background: `linear-gradient(135deg, ${item.heroColor} 0%, ${item.accentColor} 100%)` }}
                 >
-                  <span className="tile-media-icon" style={{ color: item.accentColor }}>
-                    {item.icon}
-                  </span>
+                  <span className="tile-media-icon">{item.icon}</span>
                 </div>
               )}
               {item.badge && <span className="tile-badge">{item.badge}</span>}
-              {i === focusedIndex && <div className="tile-focus-ring" />}
             </div>
           ))}
 
-          {/* Quick-action system tiles */}
+          {/* Quick-action system tiles (circular buttons) */}
           {quickActionsData.quickActions.map(action => (
-            <div key={action.id} className="dashboard-tile quick-action-tile" title={action.label}>
+            <div
+              key={action.id}
+              className="dashboard-tile quick-action-tile"
+              title={action.label}
+              aria-label={action.label}
+            >
               <QuickActionIcon type={action.icon} />
             </div>
           ))}
         </div>
 
-        {/* Label below focused tile */}
+        {/* Label row below focused tile */}
         <div className="dashboard-tile-label">
           <span className="tile-label-title">{focusedItem?.title}</span>
-          {focusedItem?.genre && (
-            <span className="tile-label-genre">{focusedItem.genre}</span>
-          )}
+          <button className="tile-label-more" aria-label="More options">•••</button>
         </div>
       </div>
 
-      {/* ── Hero cover art (right side) ──────────────────────────────────── */}
+      {/* ── Hero character art — right side ────────────────────────────────── */}
       {focusedItem?.cover && (
-        <div className="dashboard-hero-cover">
+        <div className={`dashboard-hero-cover${heroFading ? ' fading' : ''}`}>
           <img
             src={focusedItem.cover}
             alt={focusedItem.title}
-            onError={e => { e.target.style.display = 'none'; }}
+            onError={e => { e.currentTarget.style.display = 'none'; }}
           />
         </div>
       )}
 
-      {/* ── Hero text content (bottom left) ──────────────────────────────── */}
-      <div className="dashboard-hero-content">
+      {/* ── Hero text + actions — bottom left ─────────────────────────────── */}
+      <div
+        className={`dashboard-hero-content${heroFading ? ' fading' : ''}`}
+        style={{ '--hero-accent': heroAccent }}
+      >
         {focusedItem?.subtitle ? (
-          <>
-            <p className="hero-game-brand">{focusedItem.shortTitle}</p>
-            <p className="hero-game-subtitle">{focusedItem.subtitle}</p>
-          </>
+          <div className="hero-logo-lockup">
+            <span className="hero-game-brand">{focusedItem.shortTitle}</span>
+            <span className="hero-game-subtitle">{focusedItem.subtitle}</span>
+          </div>
         ) : (
           <p className="hero-game-title">{focusedItem?.title}</p>
         )}
-        {focusedItem?.studio && (
-          <p className="hero-studio">{focusedItem.studio}</p>
-        )}
+
         <p className="hero-tagline">{focusedItem?.tagline}</p>
+
         <div className="hero-actions">
-          <button className="hero-btn-play">
-            <span className="play-icon">▶</span> Play
+          <button id="btn-play" className="hero-btn-play" onClick={playSelect}>
+            Play
           </button>
-          <button className="hero-btn-more">•••</button>
+          <button id="btn-more" className="hero-btn-more" aria-label="More options">
+            •••
+          </button>
         </div>
       </div>
 
-      {/* ── Bottom hint bar ───────────────────────────────────────────────── */}
-      <div className="dashboard-hint-bar">
-        <span><kbd>←→</kbd> Navigate</span>
+      {/* ── Keyboard hint bar ──────────────────────────────────────────────── */}
+      <div className="dashboard-hint-bar" aria-hidden="true">
+        <span><kbd>← →</kbd> Navigate</span>
         <span><kbd>Tab</kbd> Switch Tab</span>
         <span><kbd>Enter</kbd> Play</span>
         <span><kbd>Esc</kbd> Back</span>
