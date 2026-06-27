@@ -2,6 +2,7 @@
 // Synthesizes startup chimes, navigation clicks, selections, and looping ambient themes.
 
 import bootClickSound from '../assets/sfx/boot_logo_click_sound.ogg';
+import navSound from '../assets/sfx/nav_sound.ogg';
 
 let audioCtx = null;
 let ambientOscs = [];
@@ -10,6 +11,7 @@ let ambientFilter = null;
 let currentThemeName = 'ps5';
 let ambientInterval = null;
 let bootClickBuffer = null;
+let navSoundBuffer = null;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -21,36 +23,39 @@ function getAudioContext() {
   return audioCtx;
 }
 
-// Pre-load the OGG file
-async function loadBootClick() {
-  if (bootClickBuffer) return bootClickBuffer;
+// Pre-load OGG files
+async function loadAudioBuffer(url) {
   try {
     const ctx = getAudioContext();
-    const response = await fetch(bootClickSound);
+    const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
-    bootClickBuffer = await ctx.decodeAudioData(arrayBuffer);
-    return bootClickBuffer;
+    return await ctx.decodeAudioData(arrayBuffer);
   } catch (e) {
-    console.error("Failed to load boot click sound", e);
+    console.error(`Failed to load audio: ${url}`, e);
     return null;
   }
 }
 
+async function initBuffers() {
+  bootClickBuffer = await loadAudioBuffer(bootClickSound);
+  navSoundBuffer = await loadAudioBuffer(navSound);
+}
+
 // Initialize loading
-loadBootClick();
+initBuffers();
 
 // Play the OGG boot click sound
 export async function playBootClick() {
   try {
     const ctx = getAudioContext();
-    const buffer = await loadBootClick();
-    if (!buffer) return;
+    if (!bootClickBuffer) bootClickBuffer = await loadAudioBuffer(bootClickSound);
+    if (!bootClickBuffer) return;
 
     const source = ctx.createBufferSource();
     const gain = ctx.createGain();
     
-    source.buffer = buffer;
-    gain.gain.value = 0.5; // Adjust volume as needed
+    source.buffer = bootClickBuffer;
+    gain.gain.value = 0.5;
 
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -131,35 +136,24 @@ export function playBootSound() {
   }
 }
 
-// Navigation Tick (soft digital click)
-export function playTick() {
+// Navigation Tick (now using OGG)
+export async function playTick() {
   try {
     const ctx = getAudioContext();
-    const now = ctx.currentTime;
+    if (!navSoundBuffer) navSoundBuffer = await loadAudioBuffer(navSound);
+    if (!navSoundBuffer) return;
 
-    const osc = ctx.createOscillator();
+    const source = ctx.createBufferSource();
     const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
+    
+    source.buffer = navSoundBuffer;
+    gain.gain.value = 0.4;
 
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1000, now);
-    osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
-
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1200, now);
-    filter.Q.setValueAtTime(1.0, now);
-
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-
-    osc.connect(filter);
-    filter.connect(gain);
+    source.connect(gain);
     gain.connect(ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 0.06);
+    source.start(0);
   } catch (e) {
-    // Ignore audio context errors
+    console.error("Failed to play nav sound", e);
   }
 }
 
