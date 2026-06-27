@@ -12,6 +12,7 @@ export function FocusProvider({ children }) {
   const [focusId, setFocusId] = useState('boot-start');
   const [currentTheme, setCurrentTheme] = useState('ps5');
   const [activeUser, setActiveUser] = useState(null);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const applyTheme = (themeName) => {
     setCurrentTheme(themeName);
@@ -28,6 +29,8 @@ export function FocusProvider({ children }) {
     applyTheme,
     activeUser,
     setActiveUser,
+    selectedGame,
+    setSelectedGame,
   };
 
   return (

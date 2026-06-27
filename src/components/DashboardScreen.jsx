@@ -29,7 +29,7 @@ function SettingsIcon() {
 // Dashboard
 // ──────────────────────────────────────────────────────────────────────────────
 export default function DashboardScreen() {
-  const { activeUser, setActiveScreen } = useFocus();
+  const { activeUser, setActiveScreen, setSelectedGame } = useFocus();
   const [activeTab, setActiveTab] = useState('games');
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [focusedSection, setFocusedSection] = useState('TILES'); // 'TOP_BAR', 'TILES', 'HERO'
@@ -78,7 +78,13 @@ export default function DashboardScreen() {
                    tagline: game.short_description.replace(/<[^>]*>?/gm, ''), // Remove HTML tags
                    heroColor: '#0a0a0a', 
                    accentColor: '#ffffff',
-                   badge: 'PS5'
+                   badge: 'PS5',
+                   developer: game.developers ? game.developers[0] : 'Unknown Developer',
+                   publisher: game.publishers ? game.publishers[0] : 'Unknown Publisher',
+                   releaseDate: game.release_date ? game.release_date.date : 'TBA',
+                   price: game.price_overview ? game.price_overview.final_formatted : 'Free',
+                   description: game.detailed_description,
+                   shortDescription: game.short_description
                  };
                }
             } catch (err) {
@@ -208,6 +214,7 @@ export default function DashboardScreen() {
           setFocusedSection('TILES');
         } else if (e.key === 'Enter') {
           playSelect();
+          // Top bar actions can be added here (Search, Settings, etc.)
         }
       } else if (focusedSection === 'TILES') {
         if (e.key === 'ArrowLeft') {
@@ -224,6 +231,8 @@ export default function DashboardScreen() {
           setFocusedSection('HERO');
         } else if (e.key === 'Enter') {
           playSelect();
+          setSelectedGame(focusedItem);
+          setActiveScreen('DETAILS');
         }
       } else if (focusedSection === 'HERO') {
         if (e.key === 'ArrowLeft') {
@@ -236,7 +245,13 @@ export default function DashboardScreen() {
           playTick();
           setFocusedSection('TILES');
         } else if (e.key === 'Enter') {
-          playSelect();
+          if (heroIndex === 0) {
+            playSelect();
+            setSelectedGame(focusedItem);
+            setActiveScreen('DETAILS');
+          } else {
+            playSelect();
+          }
         }
       }
 
@@ -366,7 +381,14 @@ export default function DashboardScreen() {
           <p className="hero-tagline">{focusedItem?.tagline}</p>
           
           <div className="hero-actions">
-            <button className={`btn-play${focusedSection === 'HERO' && heroIndex === 0 ? ' focused' : ''}`} onClick={playSelect}>
+            <button 
+              className={`btn-play${focusedSection === 'HERO' && heroIndex === 0 ? ' focused' : ''}`} 
+              onClick={() => {
+                playSelect();
+                setSelectedGame(focusedItem);
+                setActiveScreen('DETAILS');
+              }}
+            >
               Play
             </button>
             <button className={`btn-more${focusedSection === 'HERO' && heroIndex === 1 ? ' focused' : ''}`}>
