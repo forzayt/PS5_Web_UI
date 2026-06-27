@@ -154,38 +154,7 @@ export default function LoginScreen() {
         </div>
       </div>
 
-      {/* Bottom Actions Footer */}
-      <div className="login-footer">
-        <div className="footer-left">
-          <div 
-            className={`footer-helper power-button ${isPowerFocused ? 'focused' : ''}`} 
-            onMouseEnter={handlePowerFocus}
-            onClick={handleSelect}
-          >
-            <div className="power-icon-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                <line x1="12" y1="2" x2="12" y2="12"></line>
-              </svg>
-            </div>
-            <span>Shutdown</span>
-          </div>
-        </div>
-        <div className="footer-right">
-          <div className="footer-helper">
-            <span className="key-icon">F11</span>
-            <span>Fullscreen</span>
-          </div>
-          <div className="footer-helper">
-            <span className="key-icon">Arrows</span>
-            <span>Navigate</span>
-          </div>
-          <div className="footer-helper">
-            <span className="key-icon">Enter</span>
-            <span>Select</span>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Loading/Logging In Overlay */}
       {isLoggingIn && (
