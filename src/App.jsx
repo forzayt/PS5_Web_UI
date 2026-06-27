@@ -2,6 +2,7 @@ import React from 'react';
 import { FocusProvider, useFocus } from './context/FocusContext';
 import BootScreen from './components/BootScreen';
 import LoginScreen from './components/LoginScreen';
+import DashboardScreen from './components/DashboardScreen';
 import BackgroundCanvas from './components/BackgroundCanvas';
 
 function MainAppContent() {
@@ -14,6 +15,7 @@ function MainAppContent() {
       
       {activeScreen === 'BOOT' && <BootScreen />}
       {activeScreen === 'LOGIN' && <LoginScreen />}
+      {activeScreen === 'DASHBOARD' && <DashboardScreen />}
     </div>
   );
 }

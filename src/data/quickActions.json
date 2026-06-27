@@ -1,0 +1,24 @@
+﻿{
+  "quickActions": [
+    {
+      "id": "ps-store",
+      "label": "PlayStation Store",
+      "icon": "bag"
+    },
+    {
+      "id": "ps-app",
+      "label": "PlayStation App",
+      "icon": "controller"
+    },
+    {
+      "id": "game-library",
+      "label": "Game Library",
+      "icon": "grid"
+    },
+    {
+      "id": "trophy",
+      "label": "Trophies",
+      "icon": "trophy"
+    }
+  ]
+}

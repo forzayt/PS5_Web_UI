@@ -1,0 +1,102 @@
+{
+  "games": [
+    {
+      "id": "spider-man-mm",
+      "title": "Marvel's Spider-Man: Miles Morales",
+      "shortTitle": "SPIDER-MAN",
+      "subtitle": "Miles Morales",
+      "tagline": "Be Greater. Be Yourself.",
+      "cover": "https://picsum.photos/seed/spiderman/800/450",
+      "heroColor": "#6b0f0f",
+      "accentColor": "#e74c3c",
+      "badge": null,
+      "genre": "Action-Adventure",
+      "studio": "Insomniac Games",
+      "rating": "T"
+    },
+    {
+      "id": "god-of-war",
+      "title": "God of War Ragnarok",
+      "shortTitle": "GOD OF WAR",
+      "subtitle": "Ragnarok",
+      "tagline": "The End Begins.",
+      "cover": "https://picsum.photos/seed/godofwar/800/450",
+      "heroColor": "#0a1628",
+      "accentColor": "#4a90d9",
+      "badge": null,
+      "genre": "Action-RPG",
+      "studio": "Santa Monica Studio",
+      "rating": "M"
+    },
+    {
+      "id": "demons-souls",
+      "title": "Demon's Souls",
+      "shortTitle": "DEMON'S SOULS",
+      "subtitle": "",
+      "tagline": "Death is Only the Beginning.",
+      "cover": "https://picsum.photos/seed/demonsouls/800/450",
+      "heroColor": "#1a1000",
+      "accentColor": "#c9a227",
+      "badge": null,
+      "genre": "Action-RPG",
+      "studio": "Bluepoint Games",
+      "rating": "M"
+    },
+    {
+      "id": "ratchet-clank",
+      "title": "Ratchet and Clank: Rift Apart",
+      "shortTitle": "RATCHET & CLANK",
+      "subtitle": "Rift Apart",
+      "tagline": "Blast Across Dimensions.",
+      "cover": "https://picsum.photos/seed/ratchet/800/450",
+      "heroColor": "#1a0a2e",
+      "accentColor": "#9b59b6",
+      "badge": null,
+      "genre": "Platformer",
+      "studio": "Insomniac Games",
+      "rating": "E10+"
+    },
+    {
+      "id": "returnal",
+      "title": "Returnal",
+      "shortTitle": "RETURNAL",
+      "subtitle": "",
+      "tagline": "Break the Cycle.",
+      "cover": "https://picsum.photos/seed/returnal/800/450",
+      "heroColor": "#001a1a",
+      "accentColor": "#00bcd4",
+      "badge": null,
+      "genre": "Third-Person Shooter",
+      "studio": "Housemarque",
+      "rating": "T"
+    },
+    {
+      "id": "horizon-fw",
+      "title": "Horizon Forbidden West",
+      "shortTitle": "HORIZON",
+      "subtitle": "Forbidden West",
+      "tagline": "Explore the Frontier.",
+      "cover": "https://picsum.photos/seed/horizon/800/450",
+      "heroColor": "#1a0f00",
+      "accentColor": "#f39c12",
+      "badge": null,
+      "genre": "Action-RPG",
+      "studio": "Guerrilla Games",
+      "rating": "T"
+    },
+    {
+      "id": "astros-playroom",
+      "title": "Astro's Playroom",
+      "shortTitle": "ASTRO'S",
+      "subtitle": "Playroom",
+      "tagline": "Feel the DualSense.",
+      "cover": "https://picsum.photos/seed/astro/800/450",
+      "heroColor": "#001a40",
+      "accentColor": "#3498db",
+      "badge": "pre-installed",
+      "genre": "Platformer",
+      "studio": "Team Asobi",
+      "rating": "E"
+    }
+  ]
+}

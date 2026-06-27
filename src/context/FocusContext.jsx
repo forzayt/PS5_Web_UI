@@ -11,6 +11,7 @@ export function FocusProvider({ children }) {
   const [activeScreen, setActiveScreen] = useState('BOOT');
   const [focusId, setFocusId] = useState('boot-start');
   const [currentTheme, setCurrentTheme] = useState('ps5');
+  const [activeUser, setActiveUser] = useState(null);
 
   const applyTheme = (themeName) => {
     setCurrentTheme(themeName);
@@ -24,7 +25,9 @@ export function FocusProvider({ children }) {
     focusId,
     setFocusId,
     currentTheme,
-    applyTheme
+    applyTheme,
+    activeUser,
+    setActiveUser,
   };
 
   return (

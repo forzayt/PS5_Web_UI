@@ -4,7 +4,7 @@ import { useFocus } from '../context/FocusContext';
 import userData from '../data/users.json';
 
 export default function LoginScreen() {
-  const { setActiveScreen } = useFocus();
+  const { setActiveScreen, setActiveUser } = useFocus();
   const [isMounted, setIsMounted] = useState(false);
   const [focusCol, setFocusCol] = useState(0); // Default focused on first user
   const [isPowerFocused, setIsPowerFocused] = useState(false);
@@ -62,16 +62,14 @@ export default function LoginScreen() {
     // Profile selected
     playSelect();
     const user = users[focusCol];
-    const name = user.username;
-
-    setSelectedUser(name);
+    setSelectedUser(user.username);
     setIsLoggingIn(true);
     
-    // Simulate dashboard loading or login completion
+    // Navigate to dashboard after loading overlay fades in
     setTimeout(() => {
-      setIsLoggingIn(false);
-      alert(`Logged in as ${name}! (In a full build, this would load the PS5 Dashboard)`);
-    }, 2500);
+      setActiveUser(user);
+      setActiveScreen('DASHBOARD');
+    }, 1400);
   };
 
   const handleShutdown = () => {

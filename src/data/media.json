@@ -1,0 +1,82 @@
+{
+  "media": [
+    {
+      "id": "netflix",
+      "title": "Netflix",
+      "shortTitle": "NETFLIX",
+      "subtitle": "",
+      "tagline": "Watch Anywhere. Cancel Anytime.",
+      "cover": "https://picsum.photos/seed/netflix/800/450",
+      "heroColor": "#141414",
+      "accentColor": "#e50914",
+      "icon": "N",
+      "badge": null,
+      "genre": "Streaming"
+    },
+    {
+      "id": "spotify",
+      "title": "Spotify",
+      "shortTitle": "SPOTIFY",
+      "subtitle": "",
+      "tagline": "Music for Everyone.",
+      "cover": "https://picsum.photos/seed/spotify/800/450",
+      "heroColor": "#0a1a0a",
+      "accentColor": "#1db954",
+      "icon": "\u266a",
+      "badge": null,
+      "genre": "Music"
+    },
+    {
+      "id": "youtube",
+      "title": "YouTube",
+      "shortTitle": "YOUTUBE",
+      "subtitle": "",
+      "tagline": "See What's Next.",
+      "cover": "https://picsum.photos/seed/youtube/800/450",
+      "heroColor": "#1a0000",
+      "accentColor": "#ff0000",
+      "icon": "\u25b6",
+      "badge": null,
+      "genre": "Video"
+    },
+    {
+      "id": "disney-plus",
+      "title": "Disney+",
+      "shortTitle": "DISNEY+",
+      "subtitle": "",
+      "tagline": "The Stories Never End.",
+      "cover": "https://picsum.photos/seed/disneyplus/800/450",
+      "heroColor": "#00003a",
+      "accentColor": "#113ccf",
+      "icon": "D+",
+      "badge": null,
+      "genre": "Streaming"
+    },
+    {
+      "id": "apple-tv",
+      "title": "Apple TV+",
+      "shortTitle": "APPLE TV+",
+      "subtitle": "",
+      "tagline": "Original Stories. Bold Voices.",
+      "cover": "https://picsum.photos/seed/appletv/800/450",
+      "heroColor": "#0a0a0a",
+      "accentColor": "#a8b2d8",
+      "icon": "\uf8ff",
+      "badge": null,
+      "genre": "Streaming"
+    },
+    {
+      "id": "twitch",
+      "title": "Twitch",
+      "shortTitle": "TWITCH",
+      "subtitle": "",
+      "tagline": "You're Live.",
+      "cover": "https://picsum.photos/seed/twitch/800/450",
+      "heroColor": "#1a0035",
+      "accentColor": "#9147ff",
+      "icon": "\u2b21",
+      "badge": null,
+      "genre": "Live"
+    }
+  ]
+}
