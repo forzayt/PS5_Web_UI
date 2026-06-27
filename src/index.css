@@ -177,3 +177,402 @@ body {
   0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
   50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
 }
+
+/* ==========================================================================
+   TRANSITIONS & LAUNCH/LOGIN STYLES
+   ========================================================================== */
+
+.boot-container-new.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.08);
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.login-screen-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.2s;
+}
+
+.login-screen-container.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Light Beam in Top Left Corner */
+.light-beam-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 10% 5%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 25%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Real-time Clock */
+.login-clock {
+  position: absolute;
+  top: 45px;
+  right: 60px;
+  font-size: 1.4rem;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  color: var(--text-main);
+  opacity: 0.9;
+  z-index: 10;
+  font-family: var(--font-primary);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Main Content & Title */
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  z-index: 10;
+  text-align: center;
+}
+
+.login-header h1 {
+  font-size: 2.6rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  color: #ffffff;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transform: translateY(-30px);
+  opacity: 0;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 1.2s ease 0.2s;
+}
+
+.login-header p {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, opacity 1.2s ease 0.35s;
+}
+
+.login-screen-container.active .login-header h1,
+.login-screen-container.active .login-header p {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Stacking & Fan-out Profile Cards */
+.login-profiles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 15px;
+  perspective: 1000px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  z-index: 2;
+  transition: z-index 0.3s;
+}
+
+.profile-card.focused {
+  z-index: 5;
+}
+
+/* Profile Staggered Entry Animation Definitions */
+.profile-card-1 {
+  /* Offset to the right by card-width (145px) + gap (40px) = 185px to stack directly under Ryan (Cat) */
+  transform: translateX(185px) scale(0.85);
+  opacity: 0;
+}
+
+.profile-card-2 {
+  /* Center profile card - start scaled down */
+  transform: scale(0.6);
+  opacity: 0;
+}
+
+.profile-card-3 {
+  /* Offset to the left by card-width (145px) + gap (40px) = 185px to stack directly under Ryan (Cat) */
+  transform: translateX(-185px) scale(0.85);
+  opacity: 0;
+}
+
+/* Trigger Fan-out on active container */
+.login-screen-container.active .profile-card-1 {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, opacity 1.2s ease 0.25s;
+}
+
+.login-screen-container.active .profile-card-2 {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 1.2s ease 0.1s;
+}
+
+.login-screen-container.active .profile-card-3 {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, opacity 1.2s ease 0.4s;
+}
+
+/* Avatar design */
+.avatar-wrapper {
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.avatar-image-container {
+  width: 88%;
+  height: 88%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #090c15;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Focus and hover glows */
+.profile-card:hover .avatar-wrapper,
+.profile-card.focused .avatar-wrapper {
+  transform: scale(1.1);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px #ffffff, 0 0 30px rgba(0, 67, 255, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+/* Add User plus symbol styling */
+.avatar-plus {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.profile-card:hover .avatar-plus,
+.profile-card.focused .avatar-plus {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Controller indicator badge above focused card */
+.controller-indicator {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.controller-indicator svg {
+  width: 22px;
+  height: 22px;
+  fill: #ffffff;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.profile-card.focused .controller-indicator {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* User names details */
+.profile-name {
+  margin-top: 18px;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  transition: color 0.3s, text-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 24px;
+}
+
+.profile-card:hover .profile-name,
+.profile-card.focused .profile-name {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* PlayStation Plus Badge */
+.plus-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  background: #f1bf00;
+  color: #05070e;
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  line-height: 1;
+  text-align: center;
+  padding-bottom: 1px;
+}
+
+/* Options menu tooltip */
+.options-helper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.options-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 14px;
+}
+
+.options-icon span {
+  width: 100%;
+  height: 2px;
+  background: var(--text-muted);
+  border-radius: 1px;
+}
+
+.profile-card.focused .options-helper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bottom Actions Bar */
+.login-footer {
+  position: absolute;
+  bottom: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 80px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  pointer-events: auto;
+}
+
+/* Power circular button */
+.power-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  outline: none;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.power-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: fill 0.3s;
+}
+
+.power-btn:hover,
+.power-btn.focused {
+  transform: scale(1.1);
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* X Select navigation button */
+.select-helper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.9;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.cross-button-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #05070e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1;
+}
+
