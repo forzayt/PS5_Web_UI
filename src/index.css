@@ -305,8 +305,8 @@ body {
 
 /* Profile Staggered Entry Animation Definitions */
 .profile-card-1 {
-  /* Offset to the right by card-width (145px) + gap (40px) = 185px to stack directly under Ryan (Cat) */
-  transform: translateX(185px) scale(0.85);
+  /* Offset to the right by card-width (180px) + gap (40px) = 220px to stack directly under Ryan (Cat) */
+  transform: translateX(220px) scale(0.85);
   opacity: 0;
 }
 
@@ -317,8 +317,8 @@ body {
 }
 
 .profile-card-3 {
-  /* Offset to the left by card-width (145px) + gap (40px) = 185px to stack directly under Ryan (Cat) */
-  transform: translateX(-185px) scale(0.85);
+  /* Offset to the left by card-width (180px) + gap (40px) = 220px to stack directly under Ryan (Cat) */
+  transform: translateX(-220px) scale(0.85);
   opacity: 0;
 }
 
@@ -343,8 +343,8 @@ body {
 
 /* Avatar design */
 .avatar-wrapper {
-  width: 145px;
-  height: 145px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -390,8 +390,8 @@ body {
 }
 
 .avatar-image-container {
-  width: 88%;
-  height: 88%;
+  width: 95%;
+  height: 95%;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -416,7 +416,7 @@ body {
 
 /* Add User plus symbol styling */
 .avatar-plus {
-  font-size: 3rem;
+  font-size: 3.5rem;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 300;
   transition: color 0.3s, transform 0.3s;
@@ -430,8 +430,8 @@ body {
 
 /* User names details */
 .profile-name {
-  margin-top: 18px;
-  font-size: 1.15rem;
+  margin-top: 22px;
+  font-size: 1.3rem;
   font-weight: 400;
   color: var(--text-muted);
   transition: color 0.3s, text-shadow 0.3s;
