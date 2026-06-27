@@ -178,8 +178,12 @@ export default function LoginScreen() {
           </button>
         </div>
         <div className="footer-right">
-          <div className="select-helper">
-            <span className="cross-button-icon">X</span>
+          <div className="footer-helper">
+            <span className="key-icon">Arrows</span>
+            <span>Navigate</span>
+          </div>
+          <div className="footer-helper">
+            <span className="key-icon">Enter</span>
             <span>Select</span>
           </div>
         </div>

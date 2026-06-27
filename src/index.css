@@ -552,11 +552,11 @@ body {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* X Select navigation button */
-.select-helper {
+/* Bottom Helper buttons */
+.footer-helper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 0.95rem;
   font-weight: 500;
   color: #ffffff;
@@ -564,19 +564,21 @@ body {
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.cross-button-icon {
-  width: 24px;
+.key-icon {
+  min-width: 24px;
   height: 24px;
-  border-radius: 50%;
+  padding: 0 8px;
+  border-radius: 4px;
   background: #ffffff;
   color: #05070e;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-primary);
   line-height: 1;
+  text-transform: uppercase;
 }
 
