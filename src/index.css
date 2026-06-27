@@ -105,8 +105,8 @@ body {
 
 .ps-button-wrapper {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,65 +120,99 @@ body {
 }
 
 .ps-button-wrapper.pressed .ps-button-inner-ring {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.6), inset 0 0 25px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
+/* Outer ring — breathing animation lives here */
 .ps-button-outer-ring {
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  /* Start near-invisible, breathe up to bright */
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  animation: breathingRing 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.ps-button-wrapper.pressed .ps-button-outer-ring,
+.ps-button-wrapper.pressed .ps-button-glow {
+  animation: none;
 }
 
 .ps-button-inner-ring {
-  width: 85%;
-  height: 85%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  width: 78%;
+  height: 78%;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .ps-button-core {
-  width: 60%;
-  height: 60%;
+  width: 65%;
+  height: 65%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #ffffff;
+  border-radius: 50%;
 }
 
 .ps-icon-img {
-  width: 100%;
-  height: 100%;
+  width: 68%;
+  height: 68%;
   object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  /* Logo is white-on-white background, invert to black */
+  filter: brightness(0);
 }
 
+/* Large area-flooding bloom behind the button */
 .ps-button-glow {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 140%;
-  height: 140%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  width: 420%;
+  height: 420%;
   border-radius: 50%;
-  animation: pulseGlow 4s infinite ease-in-out;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28) 0%, rgba(255,255,255,0.06) 30%, transparent 65%);
   pointer-events: none;
+  animation: breathingBloom 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-@keyframes pulseGlow {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+/* Ring: nearly invisible → blazing bright → back */
+@keyframes breathingRing {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.95);
+    box-shadow:
+      0 0 18px 4px rgba(255, 255, 255, 0.7),
+      0 0 40px 8px rgba(255, 255, 255, 0.35),
+      inset 0 0 14px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Bloom: barely there → massive soft flood → back */
+@keyframes breathingBloom {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* ==========================================================================
