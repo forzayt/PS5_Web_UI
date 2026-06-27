@@ -50,7 +50,7 @@ export default function BootScreen() {
     <div className={`boot-container-new ${isExiting ? 'fade-out' : ''}`}>
       <div className={`boot-content-wrapper ${isReady ? 'visible' : ''}`}>
         <div className="boot-top-text">
-          Press the PS button on your controller.
+          Press the Enter button on your keyboard.
         </div>
 
         <div 

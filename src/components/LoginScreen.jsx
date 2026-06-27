@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { playTick, playSelect, playBack, stopMusic } from '../utils/AudioSystem';
 import { useFocus } from '../context/FocusContext';
-import ryanAvatar from '../assets/ryan_avatar.png';
+import userData from '../data/users.json';
 
 export default function LoginScreen() {
   const { setActiveScreen } = useFocus();
   const [isMounted, setIsMounted] = useState(false);
   const [focusRow, setFocusRow] = useState(0); // Row 0 = profiles, Row 1 = bottom options
-  const [focusCol, setFocusCol] = useState(1); // Default focused on Ryan (Cat) - Col 1
+  const [focusCol, setFocusCol] = useState(0); // Default focused on first user
   const [timeStr, setTimeStr] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isShuttingDown, setIsShuttingDown] = useState(false);
+
+  const users = userData.users;
 
   // Real-time Clock
   useEffect(() => {
@@ -50,10 +52,8 @@ export default function LoginScreen() {
     if (focusRow === 0) {
       // Profile selected
       playSelect();
-      let name = '';
-      if (focusCol === 0) name = 'Add User';
-      else if (focusCol === 1) name = 'Ryan Biniecki';
-      else if (focusCol === 2) name = 'Ryan Biniecki +';
+      const user = users[focusCol];
+      const name = user.username;
 
       setSelectedUser(name);
       setIsLoggingIn(true);
@@ -89,7 +89,7 @@ export default function LoginScreen() {
         }
       } else if (e.key === 'ArrowRight') {
         if (focusRow === 0) {
-          const nextCol = Math.min(2, focusCol + 1);
+          const nextCol = Math.min(users.length - 1, focusCol + 1);
           handleFocus(0, nextCol);
         }
       } else if (e.key === 'ArrowDown') {
@@ -98,7 +98,7 @@ export default function LoginScreen() {
         }
       } else if (e.key === 'ArrowUp') {
         if (focusRow === 1) {
-          handleFocus(0, 1); // Focus Ryan (Cat) profile
+          handleFocus(0, 0); // Focus first user profile
         }
       } else if (e.key === 'Enter') {
         handleSelect();
@@ -107,7 +107,7 @@ export default function LoginScreen() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [focusRow, focusCol, isLoggingIn, isShuttingDown]);
+  }, [focusRow, focusCol, isLoggingIn, isShuttingDown, users.length]);
 
   // SVG Gamepad Icon
   const gamepadIcon = (
@@ -131,107 +131,35 @@ export default function LoginScreen() {
         </div>
 
         <div className="login-profiles">
-          {/* Add User Card */}
-          <div 
-            className={`profile-card profile-card-1 ${focusRow === 0 && focusCol === 0 ? 'focused' : ''}`}
-            onMouseEnter={() => handleFocus(0, 0)}
-            onClick={handleSelect}
-          >
-            <div className="controller-indicator">
-              {gamepadIcon}
-              <span>1</span>
-            </div>
-            <div className="avatar-wrapper">
-              <div className="avatar-plus">+</div>
-            </div>
-            <div className="profile-name">
-              <span>Add User</span>
-            </div>
-            <div className="options-helper">
-              <div className="options-icon">
-                <span></span>
-                <span></span>
-                <span></span>
+          {users.map((user, index) => (
+            <div 
+              key={index}
+              className={`profile-card profile-card-${index + 1} ${focusRow === 0 && focusCol === index ? 'focused' : ''}`}
+              onMouseEnter={() => handleFocus(0, index)}
+              onClick={handleSelect}
+            >
+              <div className="controller-indicator">
+                {gamepadIcon}
+                <span>1</span>
               </div>
-              <span>Options</span>
-            </div>
-          </div>
-
-          {/* Ryan Biniecki (Cat Avatar) Card */}
-          <div 
-            className={`profile-card profile-card-2 ${focusRow === 0 && focusCol === 1 ? 'focused' : ''}`}
-            onMouseEnter={() => handleFocus(0, 1)}
-            onClick={handleSelect}
-          >
-            <div className="controller-indicator">
-              {gamepadIcon}
-              <span>1</span>
-            </div>
-            <div className="avatar-wrapper">
-              <div className="avatar-image-container">
-                {/* PlayStation Cat SVG Avatar */}
-                <svg viewBox="0 0 100 100" className="avatar-img" style={{ fill: 'none', stroke: '#fff', strokeWidth: 3.5, strokeLinejoin: 'round' }}>
-                  <path 
-                    d="M 20 40 
-                       L 15 15 
-                       L 38 27 
-                       C 42 26, 58 26, 62 27 
-                       L 85 15 
-                       L 80 40 
-                       C 86 52, 86 68, 76 78 
-                       C 64 90, 36 90, 24 78 
-                       C 14 68, 14 52, 20 40 Z" 
-                    fill="#000" 
-                    stroke="#fff" 
-                    strokeWidth="3.5" 
-                  />
-                  <path d="M 32 48 L 44 43 L 41 52 Z" fill="#fff" stroke="none" />
-                  <path d="M 68 48 L 56 43 L 59 52 Z" fill="#fff" stroke="none" />
-                  <path d="M 48 57 L 52 57 L 50 59 Z" fill="#fff" stroke="none" />
-                </svg>
+              <div className="avatar-wrapper">
+                <div className="avatar-image-container">
+                  <img src={user.dp} alt={user.username} className="avatar-img" />
+                </div>
+              </div>
+              <div className="profile-name">
+                <span>{user.username}</span>
+              </div>
+              <div className="options-helper">
+                <div className="options-icon">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span>Options</span>
               </div>
             </div>
-            <div className="profile-name">
-              <span>Ryan Biniecki</span>
-            </div>
-            <div className="options-helper">
-              <div className="options-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <span>Options</span>
-            </div>
-          </div>
-
-          {/* Ryan Biniecki + (Photo Avatar) Card */}
-          <div 
-            className={`profile-card profile-card-3 ${focusRow === 0 && focusCol === 2 ? 'focused' : ''}`}
-            onMouseEnter={() => handleFocus(0, 2)}
-            onClick={handleSelect}
-          >
-            <div className="controller-indicator">
-              {gamepadIcon}
-              <span>1</span>
-            </div>
-            <div className="avatar-wrapper">
-              <div className="avatar-image-container">
-                <img src={ryanAvatar} alt="Ryan Biniecki" className="avatar-img" />
-              </div>
-            </div>
-            <div className="profile-name">
-              <span>Ryan Biniecki</span>
-              <span className="plus-badge">+</span>
-            </div>
-            <div className="options-helper">
-              <div className="options-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <span>Options</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
