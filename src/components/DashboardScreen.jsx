@@ -34,10 +34,15 @@ export default function DashboardScreen() {
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   // Hero crossfade state
-  const [heroCover, setHeroCover]       = useState('');
   const [heroBgColor, setHeroBgColor]   = useState('#020308');
   const [heroAccent, setHeroAccent]     = useState('#ffffff');
+  
+  const [bg1, setBg1] = useState('');
+  const [bg2, setBg2] = useState('');
+  const [showBg2, setShowBg2] = useState(false);
   const [heroFading, setHeroFading]     = useState(false);
+
+  const [screenshotIndex, setScreenshotIndex] = useState(0);
 
   const [timeStr, setTimeStr] = useState('');
   const tileRowRef = useRef(null);
@@ -66,6 +71,7 @@ export default function DashboardScreen() {
                    title: game.name,
                    cover: game.header_image,
                    heroBackground: game.background || game.header_image,
+                   screenshots: game.screenshots ? game.screenshots.map(s => s.path_full) : [game.background || game.header_image],
                    tagline: game.short_description.replace(/<[^>]*>?/gm, ''), // Remove HTML tags
                    heroColor: '#0a0a0a', 
                    accentColor: '#ffffff',
@@ -98,7 +104,10 @@ export default function DashboardScreen() {
   // ── Seed initial hero ────────────────────────────────────────────────────
   useEffect(() => {
     if (focusedItem) {
-      setHeroCover(focusedItem.cover || '');
+      const bg = (focusedItem.screenshots && focusedItem.screenshots.length > 0) 
+        ? focusedItem.screenshots[0] 
+        : (focusedItem.heroBackground || focusedItem.cover || '');
+      setBg1(bg);
       setHeroBgColor(focusedItem.heroColor || '#020308');
       setHeroAccent(focusedItem.accentColor || '#ffffff');
     }
@@ -108,15 +117,55 @@ export default function DashboardScreen() {
   // ── Hero crossfade when selection changes ────────────────────────────────
   useEffect(() => {
     if (!focusedItem) return;
+    setScreenshotIndex(0);
     setHeroFading(true);
-    const t = setTimeout(() => {
-      setHeroCover(focusedItem.heroBackground || focusedItem.cover || '');
+    
+    // Fade out text info
+    const t1 = setTimeout(() => {
+      const bg = (focusedItem.screenshots && focusedItem.screenshots.length > 0) 
+        ? focusedItem.screenshots[0] 
+        : (focusedItem.heroBackground || focusedItem.cover || '');
+      
+      // Update background with crossfade
+      if (showBg2) {
+        setBg1(bg);
+        setShowBg2(false);
+      } else {
+        setBg2(bg);
+        setShowBg2(true);
+      }
+
       setHeroBgColor(focusedItem.heroColor || '#020308');
       setHeroAccent(focusedItem.accentColor || '#ffffff');
       setHeroFading(false);
     }, 260);
-    return () => clearTimeout(t);
+    
+    return () => clearTimeout(t1);
   }, [focusedIndex, activeTab, focusedItem]);
+
+  // ── Screenshot cycling ───────────────────────────────────────────────────
+  useEffect(() => {
+    if (!focusedItem || !focusedItem.screenshots || focusedItem.screenshots.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setScreenshotIndex(prev => {
+        const next = (prev + 1) % focusedItem.screenshots.length;
+        const nextUrl = focusedItem.screenshots[next];
+        
+        if (showBg2) {
+          setBg1(nextUrl);
+          setShowBg2(false);
+        } else {
+          setBg2(nextUrl);
+          setShowBg2(true);
+        }
+        
+        return next;
+      });
+    }, 4000); // 2 seconds to show, 2 seconds to fade
+
+    return () => clearInterval(interval);
+  }, [focusedItem, showBg2]);
 
   // ── Scroll focused tile into view ────────────────────────────────────────
   useEffect(() => {
@@ -171,13 +220,24 @@ export default function DashboardScreen() {
     <div className="dashboard-container">
 
       {/* ── Background ─────────────────────────────────────── */}
-      <div
-        className={`dashboard-hero-bg ${heroFading ? 'fading' : ''}`}
-        style={{
-          backgroundImage : heroCover ? `url(${heroCover})` : 'none',
-          backgroundColor : heroBgColor,
-        }}
-      />
+      <div className="dashboard-hero-bg-layers">
+        <div
+          className="dashboard-hero-bg"
+          style={{
+            backgroundImage : bg1 ? `url(${bg1})` : 'none',
+            backgroundColor : heroBgColor,
+            opacity: showBg2 ? 0 : 1,
+          }}
+        />
+        <div
+          className="dashboard-hero-bg"
+          style={{
+            backgroundImage : bg2 ? `url(${bg2})` : 'none',
+            backgroundColor : heroBgColor,
+            opacity: showBg2 ? 1 : 0,
+          }}
+        />
+      </div>
       
       {/* Dark readability gradients */}
       <div className="dashboard-hero-overlay-top" />
