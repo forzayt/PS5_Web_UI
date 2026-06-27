@@ -93,7 +93,11 @@ export default function GameDetailsScreen() {
       <main className="details-main">
         <div className="details-left">
           <div className="details-edition">Standard Edition</div>
-          <h1 className="details-title">{selectedGame.title}</h1>
+          {selectedGame.logo ? (
+            <img src={selectedGame.logo} alt={selectedGame.title} className="details-logo-img" />
+          ) : (
+            <h1 className="details-title">{selectedGame.title}</h1>
+          )}
           
           <div className="details-actions">
             <button 

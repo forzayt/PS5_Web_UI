@@ -3,6 +3,7 @@ import { useFocus } from '../context/FocusContext';
 import { playTick, playSelect, playBack, stopMusic } from '../utils/AudioSystem';
 import gamesData from '../data/games.json';
 import mediaData from '../data/media.json';
+import trendingData from '../data/trending.json';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // SVG Icon Components
@@ -94,9 +95,33 @@ export default function DashboardScreen() {
           })
         );
         const validGames = games.filter(Boolean);
-        if (validGames.length > 0) {
-          setFetchedGames(validGames);
-        }
+        
+        const trendingGame = {
+          id: "trending-gta6",
+          title: trendingData.title,
+          logo: trendingData.logo,
+          cover: trendingData.bg1,
+          heroBackground: trendingData.bg1,
+          screenshots: [
+            trendingData.bg1,
+            trendingData.bg2,
+            trendingData.bg3,
+            trendingData.bg4,
+            trendingData.bg5
+          ].filter(Boolean),
+          tagline: trendingData.description,
+          heroColor: '#020308', 
+          accentColor: '#ffffff',
+          badge: 'PS5',
+          developer: 'Rockstar Games',
+          publisher: 'Rockstar Games',
+          releaseDate: '2025',
+          price: trendingData.price || 'TBA',
+          description: trendingData.description,
+          shortDescription: trendingData.description
+        };
+
+        setFetchedGames([trendingGame, ...validGames]);
       } catch (error) {
         console.error('Error fetching Steam games:', error);
       } finally {
@@ -374,8 +399,11 @@ export default function DashboardScreen() {
         {/* ── Hero Game Info (Bottom Left) ─────────────────────────────────── */}
         <div className={`hero-details-container ${heroFading ? 'fading' : ''}`}>
           <div className="hero-game-logo">
-             {/* Using title text as a fallback for logo image */}
-             <h1 className="hero-title-text">{focusedItem?.title}</h1>
+             {focusedItem?.logo ? (
+               <img src={focusedItem.logo} alt={focusedItem?.title} className="hero-logo-img" />
+             ) : (
+               <h1 className="hero-title-text">{focusedItem?.title}</h1>
+             )}
           </div>
           
           <p className="hero-tagline">{focusedItem?.tagline}</p>
@@ -389,7 +417,7 @@ export default function DashboardScreen() {
                 setActiveScreen('DETAILS');
               }}
             >
-              Play
+              Info
             </button>
             <button className={`btn-more${focusedSection === 'HERO' && heroIndex === 1 ? ' focused' : ''}`}>
               <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
