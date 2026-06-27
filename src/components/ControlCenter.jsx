@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { useFocus } from '../context/FocusContext';
 import { stopMusic, startMusic } from '../utils/AudioSystem';
 
-import ss440 from '../assets/screenshots/Screenshot (440).png';
-import ss442 from '../assets/screenshots/Screenshot (442).png';
-import ss444 from '../assets/screenshots/Screenshot (444).png';
 
 export default function ControlCenter() {
   const {

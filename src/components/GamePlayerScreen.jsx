@@ -2,11 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useFocus } from '../context/FocusContext';
 
 // Import game screenshots for high-quality background
-import ss438 from '../assets/screenshots/Screenshot (438).png';
-import ss440 from '../assets/screenshots/Screenshot (440).png';
-import ss442 from '../assets/screenshots/Screenshot (442).png';
-import ss444 from '../assets/screenshots/Screenshot (444).png';
-import ss446 from '../assets/screenshots/Screenshot (446).png';
 
 const GAME_METADATA = {
   'app-astro': { name: "Astro's Playroom", bg: ss438, color: '#00d2ff', action: 'Jump', sound: 'jump' },

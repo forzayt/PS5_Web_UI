@@ -2,18 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useFocus } from '../context/FocusContext';
 
 // Import our copied reference screenshots to use as live high-res game backdrops!
-import ss437 from '../assets/screenshots/Screenshot (437).png';
-import ss438 from '../assets/screenshots/Screenshot (438).png';
-import ss439 from '../assets/screenshots/Screenshot (439).png';
-import ss440 from '../assets/screenshots/Screenshot (440).png';
-import ss441 from '../assets/screenshots/Screenshot (441).png';
-import ss442 from '../assets/screenshots/Screenshot (442).png';
-import ss443 from '../assets/screenshots/Screenshot (443).png';
-import ss444 from '../assets/screenshots/Screenshot (444).png';
-import ss445 from '../assets/screenshots/Screenshot (445).png';
-import ss446 from '../assets/screenshots/Screenshot (446).png';
-import ss447 from '../assets/screenshots/Screenshot (447).png';
-import ss448 from '../assets/screenshots/Screenshot (448).png';
 
 const GAMES_DATA = {
   'app-psstore': {
